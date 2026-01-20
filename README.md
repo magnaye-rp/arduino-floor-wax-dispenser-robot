@@ -1,2 +1,64 @@
-# arduino-floor-wax-dispenser-robot
-An Arduino-powered robotic car that dispenses and spreads liquid floor wax using DC motors, a servo-controlled valve, and IR remote navigation.
+# Arduino Floor Wax Dispenser Robot
+
+An Arduino-based robotic car designed to dispense and spread liquid floor wax efficiently.  
+The robot uses a car robot kit with DC motors for movement, a servo motor for controlling a dispensing valve, and IR remote navigation for manual control.
+
+This project demonstrates practical applications of embedded systems, robotics, and basic automation using Arduino.
+
+---
+
+## 🚗 Project Overview
+
+The Floor Wax Dispenser Robot is a mobile platform capable of:
+- Navigating floors via IR remote control
+- Dispensing liquid wax through a servo-controlled open/close mechanism
+- Spreading wax evenly as it moves
+
+All logic and control are implemented using **Arduino code only**.
+
+---
+
+## 🛠️ Hardware Components
+
+- Arduino board (Uno / Nano / compatible)
+- Car robot chassis kit
+- 2× TT DC gear motors
+- L298N motor driver module
+- Servo motor (for valve or door mechanism)
+- IR receiver module
+- IR remote control
+- Liquid container (for floor wax)
+- Tubing / nozzle for dispensing
+- Power supply (battery pack)
+- Jumper wires
+
+---
+
+## ⚙️ System Functionality
+
+### 🔹 Movement Control
+- Two TT DC motors controlled via the **L298N motor driver**
+- Supports forward, backward, left, and right movement
+
+### 🔹 Wax Dispensing Mechanism
+- Servo motor acts as an **open/close valve**
+- Controls the flow of liquid wax from the container
+
+### 🔹 Navigation
+- Robot is navigated using an **IR remote**
+- IR signals are decoded by the Arduino to control movement and dispensing actions
+
+---
+
+## 🧠 Control Logic
+
+- IR remote buttons are mapped to:
+  - Robot movement directions
+  - Start/stop wax dispensing
+- Servo motor rotates to specific angles to open or close the wax outlet
+- Motors are driven through PWM signals for controlled movement
+
+---
+
+## 📂 Project Structure
+
