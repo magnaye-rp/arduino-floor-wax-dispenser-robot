@@ -61,4 +61,50 @@ All logic and control are implemented using **Arduino code only**.
 ---
 
 ## 📂 Project Structure
+arduino-floor-wax-dispenser-robot/
+│
+├── src/
+│ └── floor_wax_robot.ino
+│
+├── docs/
+│ └── wiring_diagram.png
+│
+└── README.md
+
+
+---
+
+## 🚀 Getting Started
+
+1. Assemble the robot chassis and motors
+2. Connect the L298N motor driver to the Arduino
+3. Attach the servo motor to the dispensing mechanism
+4. Wire the IR receiver to the Arduino
+5. Upload the Arduino sketch
+6. Control the robot using the IR remote
+
+---
+
+## 🔌 Libraries Used
+
+- `IRremote`
+- `Servo`
+
+*(Install via Arduino Library Manager)*
+
+---
+
+## 📌 Notes
+
+- This project focuses on **manual control via IR remote**
+- Can be extended to include:
+  - Autonomous navigation
+  - Timed dispensing
+  - Sensor-based obstacle avoidance
+
+---
+
+## 📜 License
+
+This project is open-source and intended for educational and experimental use.
 
