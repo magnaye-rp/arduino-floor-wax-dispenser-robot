@@ -7,7 +7,7 @@ This project demonstrates practical applications of embedded systems, robotics, 
 
 ---
 
-## 🚗 Project Overview
+## Project Overview
 
 The Floor Wax Dispenser Robot is a mobile platform capable of:
 - Navigating floors via IR remote control
@@ -18,7 +18,7 @@ All logic and control are implemented using **Arduino code only**.
 
 ---
 
-## 🛠️ Hardware Components
+##  Hardware Components
 
 - Arduino board (Uno / Nano / compatible)
 - Car robot chassis kit
@@ -28,7 +28,7 @@ All logic and control are implemented using **Arduino code only**.
 - IR receiver module
 - IR remote control
 - Liquid container (for floor wax)
-- Tubing / nozzle for dispensing
+- nozzle for dispensing
 - Power supply (battery pack)
 - Jumper wires
 
@@ -36,21 +36,21 @@ All logic and control are implemented using **Arduino code only**.
 
 ## ⚙️ System Functionality
 
-### 🔹 Movement Control
+### Movement Control
 - Two TT DC motors controlled via the **L298N motor driver**
 - Supports forward, backward, left, and right movement
 
-### 🔹 Wax Dispensing Mechanism
+### Wax Dispensing Mechanism
 - Servo motor acts as an **open/close valve**
 - Controls the flow of liquid wax from the container
 
-### 🔹 Navigation
+### Navigation
 - Robot is navigated using an **IR remote**
 - IR signals are decoded by the Arduino to control movement and dispensing actions
 
 ---
 
-## 🧠 Control Logic
+## Control Logic
 
 - IR remote buttons are mapped to:
   - Robot movement directions
@@ -67,7 +67,7 @@ arduino-floor-wax-dispenser-robot/
 │ └── floor_wax_robot.ino
 │
 ├── docs/
-│ └── wiring_diagram.png
+│ └── wiring_diagram.png **(in progress)
 │
 └── README.md
 
@@ -79,9 +79,8 @@ arduino-floor-wax-dispenser-robot/
 1. Assemble the robot chassis and motors
 2. Connect the L298N motor driver to the Arduino
 3. Attach the servo motor to the dispensing mechanism
-4. Wire the IR receiver to the Arduino
-5. Upload the Arduino sketch
-6. Control the robot using the IR remote
+4. Upload the Arduino sketch
+5. Control the robot using the IR remote
 
 ---
 
