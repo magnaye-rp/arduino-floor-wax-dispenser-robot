@@ -4,34 +4,27 @@
 
 IRremote ir(3);
 
-// ---------------- PIN DEFINITIONS ----------------
-// L298N motor driver
 #define IN1 2
 #define ENA 5
 #define IN2 4
 #define ENB 6
 
-// Servo & auxiliary motors
 #define SERVO_PIN 9
 #define AUX_MOTOR_1 10
 #define AUX_MOTOR_2 11
 
-// LEDs
+// pag nagka resistor
 #define SERVO_LED 12
 #define MOTOR_LED 13
 
-// ---------------- SERVO CONFIG ----------------
-const int SERVO_IDLE_ANGLE   = 0;    // always 0 when idle
-const int SERVO_ACTIVE_ANGLE = 15;   // moving + * enabled
-
-// ---------------- GLOBAL VARIABLES ----------------
+const int SERVO_IDLE_ANGLE   = 0;    
+const int SERVO_ACTIVE_ANGLE = 15;  
 Servo outletServo;
 
-bool auxMotorsEnabled = false;   // OK button
-bool servoEnabled = false;       // * button
+bool auxMotorsEnabled = false;
+bool servoEnabled = false;   
 bool carMoving = false;
 
-// ---------------- SETUP ----------------
 void setup() {
   outletServo.attach(SERVO_PIN);
   outletServo.write(SERVO_IDLE_ANGLE);
@@ -50,11 +43,9 @@ void setup() {
   Stop();
 }
 
-// ---------------- LOOP ----------------
 void loop() {
   int key = ir.getIrKey(ir.getCode(), 1);
 
-  // -------- MOVEMENT --------
   if (key == IR_KEYCODE_UP) {
     Move_Forward(100);
     delay(300);
@@ -76,14 +67,12 @@ void loop() {
     Stop();
   }
 
-  // -------- OK BUTTON → TOGGLE AUX MOTORS --------
   else if (key == IR_KEYCODE_OK) {
     auxMotorsEnabled = !auxMotorsEnabled;
     digitalWrite(MOTOR_LED, auxMotorsEnabled);
     delay(300);
   }
 
-  // -------- ASTERISK BUTTON → TOGGLE SERVO FEATURE --------
   else if (key == IR_KEYCODE_STAR) {
     servoEnabled = !servoEnabled;
     digitalWrite(SERVO_LED, servoEnabled);
@@ -96,16 +85,13 @@ void loop() {
   }
 }
 
-// ---------------- STATE HANDLERS ----------------
 void onCarMove() {
   carMoving = true;
 
-  // Servo only if * enabled
   if (servoEnabled) {
     outletServo.write(SERVO_ACTIVE_ANGLE);
   }
 
-  // Aux motors only if OK enabled
   if (auxMotorsEnabled) {
     digitalWrite(AUX_MOTOR_1, HIGH);
     digitalWrite(AUX_MOTOR_2, HIGH);
@@ -118,11 +104,10 @@ void onCarStop() {
   digitalWrite(AUX_MOTOR_1, LOW);
   digitalWrite(AUX_MOTOR_2, LOW);
 
-  // Servo returns to 0 regardless
   outletServo.write(SERVO_IDLE_ANGLE);
 }
 
-// ---------------- MOVEMENT FUNCTIONS ----------------
+
 void Move_Forward(int speed) {
   onCarMove();
   digitalWrite(IN1, HIGH);
@@ -161,5 +146,4 @@ void Stop() {
   onCarStop();
 }
 
-
-// rtr
+// would add non blocking if still have have time...

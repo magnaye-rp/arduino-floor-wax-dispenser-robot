@@ -1,9 +1,10 @@
 
 #include "IR_remote.h"
 #include "Keymap.h"
-// Provides ISR
 #ifndef __AVR_ATmega32U4__
 #include <avr/interrupt.h>
+
+//some codes are problematic, do not remove the comments
 
 volatile irparams_t irparams;
 bool MATCH(uint8_t measured_ticks, uint8_t desired_us)
@@ -56,10 +57,6 @@ ISR(TIMER_INTR_NAME)
       { // SPACE
         if (irparams.timer > GAP_TICKS)
         {
-          // big SPACE, indicates gap between codes
-          // Mark current code as ready for processing
-          // Switch to STOP
-          // Don't reset timer; keep counting space width
           irparams.rcvstate = STATE_STOP;
           irparams.lastTime = millis();
         } 
