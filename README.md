@@ -67,7 +67,7 @@ arduino-floor-wax-dispenser-robot/
 │ └── floor_wax_robot.ino
 │
 ├── docs/
-│ └── wiring_diagram.png **(in progress)
+│ └── wiring_diagram.png **(in progress)**
 │
 └── README.md
 
