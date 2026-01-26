@@ -64,13 +64,21 @@ All logic and control are implemented using **Arduino code only**.
 arduino-floor-wax-dispenser-robot/
 
  │
+ 
 ├── src/
+
  │ └── floor_wax_robot.ino
+
 │
+ 
  ├── docs/
+
  │ └── wiring_diagram.png **(in progress)**
+
 │
+
  └── README.md
+ 
 
 
 
