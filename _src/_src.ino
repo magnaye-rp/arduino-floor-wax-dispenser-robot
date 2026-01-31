@@ -4,16 +4,21 @@
 
 IRremote ir(3);
 
-#define IN1 2
-#define ENA 5
-#define IN2 4
-#define ENB 6
+// --- NEW PIN DEFINITIONS FOR 2x L298N ---
+// L298N Module 1 (Left Side Motors)
+#define L_IN1 2
+#define L_IN2 4
+#define ENA   5  // Speed Left
+
+// L298N Module 2 (Right Side Motors)
+#define R_IN3 7
+#define R_IN4 8
+#define ENB   6  // Speed Right (D6 is PWM)
 
 #define SERVO_PIN 9
 #define AUX_MOTOR_1 10
 #define AUX_MOTOR_2 11
 
-// pag nagka resistor
 #define SERVO_LED 12
 #define MOTOR_LED 13
 
@@ -23,7 +28,6 @@ Servo outletServo;
 
 bool auxMotorsEnabled = false;
 bool servoEnabled = false;   
-bool carMoving = false;
 
 void setup() {
   outletServo.attach(SERVO_PIN);
@@ -31,14 +35,16 @@ void setup() {
 
   pinMode(AUX_MOTOR_1, OUTPUT);
   pinMode(AUX_MOTOR_2, OUTPUT);
-
   pinMode(SERVO_LED, OUTPUT);
   pinMode(MOTOR_LED, OUTPUT);
 
-  pinMode(IN1, OUTPUT);
-  pinMode(ENA, OUTPUT);
-  pinMode(IN2, OUTPUT);
-  pinMode(ENB, OUTPUT);
+  // Initialize all 6 control pins for the 2 L298Ns
+  pinMode(L_IN1, OUTPUT);
+  pinMode(L_IN2, OUTPUT);
+  pinMode(ENA,   OUTPUT);
+  pinMode(R_IN3, OUTPUT);
+  pinMode(R_IN4, OUTPUT);
+  pinMode(ENB,   OUTPUT);
 
   Stop();
 }
@@ -47,37 +53,33 @@ void loop() {
   int key = ir.getIrKey(ir.getCode(), 1);
 
   if (key == IR_KEYCODE_UP) {
-    Move_Forward(100);
+    Move_Forward(150); // Increased default speed slightly for L298N voltage drop
     delay(300);
     Stop();
   }
   else if (key == IR_KEYCODE_DOWN) {
-    Move_Backward(100);
+    Move_Backward(150);
     delay(300);
     Stop();
   }
   else if (key == IR_KEYCODE_LEFT) {
-    Rotate_Left(70);
+    Rotate_Left(120);
     delay(300);
     Stop();
   }
   else if (key == IR_KEYCODE_RIGHT) {
-    Rotate_Right(70);
+    Rotate_Right(120);
     delay(300);
     Stop();
   }
-
   else if (key == IR_KEYCODE_OK) {
     auxMotorsEnabled = !auxMotorsEnabled;
     digitalWrite(MOTOR_LED, auxMotorsEnabled);
     delay(300);
   }
-
   else if (key == IR_KEYCODE_STAR) {
     servoEnabled = !servoEnabled;
     digitalWrite(SERVO_LED, servoEnabled);
-
-    // Hard OFF → force servo to 0
     if (!servoEnabled) {
       outletServo.write(SERVO_IDLE_ANGLE);
     }
@@ -85,13 +87,12 @@ void loop() {
   }
 }
 
-void onCarMove() {
-  carMoving = true;
+// --- HELPER FUNCTIONS ---
 
+void onCarMove() {
   if (servoEnabled) {
     outletServo.write(SERVO_ACTIVE_ANGLE);
   }
-
   if (auxMotorsEnabled) {
     digitalWrite(AUX_MOTOR_1, HIGH);
     digitalWrite(AUX_MOTOR_2, HIGH);
@@ -99,51 +100,64 @@ void onCarMove() {
 }
 
 void onCarStop() {
-  carMoving = false;
-
   digitalWrite(AUX_MOTOR_1, LOW);
   digitalWrite(AUX_MOTOR_2, LOW);
-
   outletServo.write(SERVO_IDLE_ANGLE);
 }
 
-
 void Move_Forward(int speed) {
   onCarMove();
-  digitalWrite(IN1, HIGH);
+  // Left Side Forward
+  digitalWrite(L_IN1, HIGH);
+  digitalWrite(L_IN2, LOW);
   analogWrite(ENA, speed);
-  digitalWrite(IN2, LOW);
+  // Right Side Forward
+  digitalWrite(R_IN3, HIGH);
+  digitalWrite(R_IN4, LOW);
   analogWrite(ENB, speed);
 }
 
 void Move_Backward(int speed) {
   onCarMove();
-  digitalWrite(IN1, LOW);
+  // Left Side Backward
+  digitalWrite(L_IN1, LOW);
+  digitalWrite(L_IN2, HIGH);
   analogWrite(ENA, speed);
-  digitalWrite(IN2, HIGH);
+  // Right Side Backward
+  digitalWrite(R_IN3, LOW);
+  digitalWrite(R_IN4, HIGH);
   analogWrite(ENB, speed);
 }
 
 void Rotate_Left(int speed) {
   onCarMove();
-  digitalWrite(IN1, LOW);
+  // Left Backward, Right Forward
+  digitalWrite(L_IN1, LOW);
+  digitalWrite(L_IN2, HIGH);
   analogWrite(ENA, speed);
-  digitalWrite(IN2, LOW);
+  digitalWrite(R_IN3, HIGH);
+  digitalWrite(R_IN4, LOW);
   analogWrite(ENB, speed);
 }
 
 void Rotate_Right(int speed) {
   onCarMove();
-  digitalWrite(IN1, HIGH);
+  // Left Forward, Right Backward
+  digitalWrite(L_IN1, HIGH);
+  digitalWrite(L_IN2, LOW);
   analogWrite(ENA, speed);
-  digitalWrite(IN2, HIGH);
+  digitalWrite(R_IN3, LOW);
+  digitalWrite(R_IN4, HIGH);
   analogWrite(ENB, speed);
 }
 
 void Stop() {
   analogWrite(ENA, 0);
   analogWrite(ENB, 0);
+  // Optional: Set all IN pins LOW to fully brake
+  digitalWrite(L_IN1, LOW);
+  digitalWrite(L_IN2, LOW);
+  digitalWrite(R_IN3, LOW);
+  digitalWrite(R_IN4, LOW);
   onCarStop();
 }
-
-// would add non blocking if still have have time...
