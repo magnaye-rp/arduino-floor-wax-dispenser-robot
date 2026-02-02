@@ -4,23 +4,25 @@
 
 IRremote ir(3);
 
-// --- NEW PIN DEFINITIONS FOR 2x L298N ---
-// L298N Module 1 (Left Side Motors)
+// --- PIN DEFINITIONS ---
 #define L_IN1 2
 #define L_IN2 4
 #define ENA   5  // Speed Left
 
-// L298N Module 2 (Right Side Motors)
 #define R_IN3 7
 #define R_IN4 8
-#define ENB   6  // Speed Right (D6 is PWM)
+#define ENB   6  // Speed Right
 
-#define SERVO_PIN 9
+#define SERVO_PIN 12
 #define AUX_MOTOR_1 10
 #define AUX_MOTOR_2 11
 
 #define SERVO_LED 12
 #define MOTOR_LED 13
+
+// Speed Settings (Lowered for better control)
+const int MOVE_SPEED = 100;   // Was 150
+const int TURN_SPEED = 90;    // Was 120
 
 const int SERVO_IDLE_ANGLE   = 0;    
 const int SERVO_ACTIVE_ANGLE = 15;  
@@ -38,7 +40,6 @@ void setup() {
   pinMode(SERVO_LED, OUTPUT);
   pinMode(MOTOR_LED, OUTPUT);
 
-  // Initialize all 6 control pins for the 2 L298Ns
   pinMode(L_IN1, OUTPUT);
   pinMode(L_IN2, OUTPUT);
   pinMode(ENA,   OUTPUT);
@@ -53,22 +54,22 @@ void loop() {
   int key = ir.getIrKey(ir.getCode(), 1);
 
   if (key == IR_KEYCODE_UP) {
-    Move_Forward(150); // Increased default speed slightly for L298N voltage drop
+    Move_Forward(MOVE_SPEED); 
     delay(300);
     Stop();
   }
   else if (key == IR_KEYCODE_DOWN) {
-    Move_Backward(150);
+    Move_Backward(MOVE_SPEED);
     delay(300);
     Stop();
   }
   else if (key == IR_KEYCODE_LEFT) {
-    Rotate_Left(120);
+    Rotate_Left(TURN_SPEED);
     delay(300);
     Stop();
   }
   else if (key == IR_KEYCODE_RIGHT) {
-    Rotate_Right(120);
+    Rotate_Right(TURN_SPEED);
     delay(300);
     Stop();
   }
@@ -105,56 +106,55 @@ void onCarStop() {
   outletServo.write(SERVO_IDLE_ANGLE);
 }
 
+// SWAPPED: Logic now drives the car forward based on your wiring
 void Move_Forward(int speed) {
   onCarMove();
-  // Left Side Forward
-  digitalWrite(L_IN1, HIGH);
-  digitalWrite(L_IN2, LOW);
+  // Left Side
+  digitalWrite(L_IN1, LOW); 
+  digitalWrite(L_IN2, HIGH);
   analogWrite(ENA, speed);
-  // Right Side Forward
-  digitalWrite(R_IN3, HIGH);
-  digitalWrite(R_IN4, LOW);
+  // Right Side
+  digitalWrite(R_IN3, LOW);
+  digitalWrite(R_IN4, HIGH);
   analogWrite(ENB, speed);
 }
 
+// SWAPPED: Logic now drives the car backward
 void Move_Backward(int speed) {
   onCarMove();
-  // Left Side Backward
-  digitalWrite(L_IN1, LOW);
-  digitalWrite(L_IN2, HIGH);
+  // Left Side
+  digitalWrite(L_IN1, HIGH);
+  digitalWrite(L_IN2, LOW);
   analogWrite(ENA, speed);
-  // Right Side Backward
-  digitalWrite(R_IN3, LOW);
-  digitalWrite(R_IN4, HIGH);
+  // Right Side
+  digitalWrite(R_IN3, HIGH);
+  digitalWrite(R_IN4, LOW);
   analogWrite(ENB, speed);
 }
 
 void Rotate_Left(int speed) {
   onCarMove();
-  // Left Backward, Right Forward
-  digitalWrite(L_IN1, LOW);
-  digitalWrite(L_IN2, HIGH);
-  analogWrite(ENA, speed);
-  digitalWrite(R_IN3, HIGH);
-  digitalWrite(R_IN4, LOW);
-  analogWrite(ENB, speed);
-}
-
-void Rotate_Right(int speed) {
-  onCarMove();
-  // Left Forward, Right Backward
   digitalWrite(L_IN1, HIGH);
   digitalWrite(L_IN2, LOW);
   analogWrite(ENA, speed);
   digitalWrite(R_IN3, LOW);
   digitalWrite(R_IN4, HIGH);
+  analogWrite(ENB, speed);
+}
+
+void Rotate_Right(int speed) {
+  onCarMove();
+  digitalWrite(L_IN1, LOW);
+  digitalWrite(L_IN2, HIGH);
+  analogWrite(ENA, speed);
+  digitalWrite(R_IN3, HIGH);
+  digitalWrite(R_IN4, LOW);
   analogWrite(ENB, speed);
 }
 
 void Stop() {
   analogWrite(ENA, 0);
   analogWrite(ENB, 0);
-  // Optional: Set all IN pins LOW to fully brake
   digitalWrite(L_IN1, LOW);
   digitalWrite(L_IN2, LOW);
   digitalWrite(R_IN3, LOW);
